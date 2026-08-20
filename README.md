@@ -72,3 +72,7 @@ THRESHOLD_5M=0.001 python -m src.main
 
 * GitHub Actionsのcronは最短5分。1分粒度が必要なら `Fly.io` / `VPS` + `--loop` へ移行。
 * Webhook URLは絶対にコミットしないこと。
+
+## 作成について
+
+本プロジェクトは [Muse Spark 1.2 Free](https://opencode.ai) (`opencode/muse-spark-1.2-contributor-free`) を使用して作成されました。
