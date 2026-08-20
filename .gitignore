@@ -1,0 +1,19 @@
+# Secrets
+.env
+webhook/
+*.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.envrc
+
+# State is committed, but ignore temp
+.state/*.tmp
+
+# OS
+.DS_Store
+Thumbs.db

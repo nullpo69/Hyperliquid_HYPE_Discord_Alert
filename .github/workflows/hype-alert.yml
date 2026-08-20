@@ -1,0 +1,52 @@
+name: HYPE Alert
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # every 5 min (UTC) - GitHub Actions minimum
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hype-alert
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Run HYPE check
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          COOLDOWN_SECONDS: "300"
+          THRESHOLD_5M: "0.05"
+          THRESHOLD_15M: "0.08"
+          THRESHOLD_PREVDAY: "0.10"
+        run: python -m src.main
+
+      - name: Commit state if changed
+        run: |
+          git config user.name "hype-bot"
+          git config user.email "hype-bot@github.actions"
+          git add .state/hype_state.json
+          if git diff --staged --quiet; then
+            echo "No state change"
+          else
+            git commit -m "chore: update hype_state [skip ci]"
+            git push
+          fi
