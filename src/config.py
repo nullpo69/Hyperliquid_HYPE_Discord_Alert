@@ -34,6 +34,31 @@ THRESHOLD_PREVDAY: float = float(os.getenv("THRESHOLD_PREVDAY", "0.10"))
 
 COOLDOWN_SECONDS: int = int(os.getenv("COOLDOWN_SECONDS", "300"))
 
+# --- Symbol mapping ---
+# Display symbol -> (dex, hl_name)
+# HYPE / SOL are on main perp dex (""); equities are on xyz dex.
+# SKHYNIX display maps to Hyperliquid's SKHY ticker.
+SYMBOL_TO_HL: dict[str, tuple[str, str]] = {
+    "HYPE": ("", "HYPE"),
+    "NVDA": ("xyz", "xyz:NVDA"),
+    "SNDK": ("xyz", "xyz:SNDK"),
+    "SKHYNIX": ("xyz", "xyz:SKHY"),
+    "SOL": ("", "SOL"),
+    "MU": ("xyz", "xyz:MU"),
+}
+
+# Allow override via env: SYMBOLS="HYPE,SOL,NVDA,..."
+_env_symbols = os.getenv("SYMBOLS", "")
+if _env_symbols.strip():
+    SYMBOLS: list[str] = [s.strip().upper() for s in _env_symbols.split(",") if s.strip()]
+else:
+    SYMBOLS: list[str] = list(SYMBOL_TO_HL.keys())
+
+# Validate that all requested symbols have a mapping
+for _s in SYMBOLS:
+    if _s not in SYMBOL_TO_HL:
+        raise ValueError(f"Unknown symbol '{_s}' — no Hyperliquid mapping in SYMBOL_TO_HL")
+
 # State file path (committed to repo)
 STATE_PATH: Path = Path(os.getenv("STATE_PATH", str(Path(__file__).parent.parent / ".state" / "hype_state.json")))
 

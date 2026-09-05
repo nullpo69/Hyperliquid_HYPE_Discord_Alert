@@ -14,8 +14,9 @@ def build_embed(alert: Alert) -> dict:
     sign = "+" if pct > 0 else ""
 
     window_label = {"5m": "5分", "15m": "15分", "prevDay": "前日比"}[alert.window]
+    symbol = getattr(alert, "symbol", "HYPE")
 
-    title = f"{emoji} HYPE急{'騰' if is_up else '落'} {sign}{pct:.2f}% ({window_label})"
+    title = f"{emoji} {symbol}急{'騰' if is_up else '落'} {sign}{pct:.2f}% ({window_label})"
 
     now_jst = datetime.datetime.now(JST).strftime("%Y-%m-%d %H:%M:%S JST")
 
@@ -30,11 +31,11 @@ def build_embed(alert: Alert) -> dict:
         "description": description,
         "color": color,
         "fields": [
+            {"name": "Symbol", "value": symbol, "inline": True},
             {"name": "Window", "value": window_label, "inline": True},
             {"name": "Direction", "value": alert.direction, "inline": True},
-            {"name": "Threshold", "value": f"{window_label} 閾値超過", "inline": True},
         ],
-        "footer": {"text": f"Hyperliquid HYPE • {now_jst}"},
+        "footer": {"text": f"Hyperliquid {symbol} • {now_jst}"},
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
     return embed
@@ -45,9 +46,10 @@ async def send_webhook(webhook_url: str, alert: Alert) -> None:
         raise ValueError("DISCORD_WEBHOOK_URL is not set or invalid")
 
     embed = build_embed(alert)
+    symbol = getattr(alert, "symbol", "HYPE")
 
     payload = {
-        "username": "HYPE Alert",
+        "username": f"{symbol} Alert",
         "avatar_url": "https://hyperliquid.xyz/favicon.ico",
         "embeds": [embed],
     }

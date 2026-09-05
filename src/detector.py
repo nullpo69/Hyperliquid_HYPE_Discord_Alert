@@ -10,6 +10,7 @@ class Alert:
     past_price: float
     current_price: float
     direction: str  # "up" | "down"
+    symbol: str = "HYPE"  # display symbol, e.g. HYPE / NVDA / SKHYNIX
 
 
 def detect(
@@ -20,6 +21,7 @@ def detect(
     last_alert: dict | None,
     now_ts: float,
     cooldown: int,
+    symbol: str = "HYPE",
 ) -> Alert | None:
     """
     history: list of {"t": float, "price": float} sorted ascending (oldest first).
@@ -36,7 +38,7 @@ def detect(
             change = (current_price - past["price"]) / past["price"]
             if abs(change) >= thresholds["5m"]:
                 candidates.append(
-                    Alert("5m", change, past["price"], current_price, "up" if change > 0 else "down")
+                    Alert("5m", change, past["price"], current_price, "up" if change > 0 else "down", symbol)
                 )
 
     # 15m check: need 3 entries ago
@@ -46,7 +48,7 @@ def detect(
             change = (current_price - past["price"]) / past["price"]
             if abs(change) >= thresholds["15m"]:
                 candidates.append(
-                    Alert("15m", change, past["price"], current_price, "up" if change > 0 else "down")
+                    Alert("15m", change, past["price"], current_price, "up" if change > 0 else "down", symbol)
                 )
 
     # prevDay check
@@ -54,7 +56,7 @@ def detect(
         change = (current_price - prev_day_price) / prev_day_price
         if abs(change) >= thresholds["prevDay"]:
             candidates.append(
-                Alert("prevDay", change, prev_day_price, current_price, "up" if change > 0 else "down")
+                Alert("prevDay", change, prev_day_price, current_price, "up" if change > 0 else "down", symbol)
             )
 
     if not candidates:
