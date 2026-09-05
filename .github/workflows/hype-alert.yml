@@ -37,6 +37,10 @@ jobs:
           THRESHOLD_5M: "0.05"
           THRESHOLD_15M: "0.08"
           THRESHOLD_PREVDAY: "0.10"
+          TRIGGER_MODE: "both"
+          LIQ_ENABLED: "1"
+          LIQ_DROP_PCT_5M: "0.04"
+          LIQ_DROP_PCT_15M: "0.07"
         run: python -m src.main
 
       - name: Commit state if changed

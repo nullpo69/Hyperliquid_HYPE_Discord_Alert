@@ -4,6 +4,8 @@ HYPE / NVDA / SNDK / SKHYNIX (SKHY) / SOL / MU 価格が急変動した際にDis
 
 ## 通知条件
 
+### 価格トリガー (`TRIGGER_MODE=price` or `both`)
+
 | Window | 閾値 | 説明 |
 |--------|------|------|
 | 5分 | ±5% | 直前run (5分前) との比較 |
@@ -12,6 +14,21 @@ HYPE / NVDA / SNDK / SKHYNIX (SKHY) / SOL / MU 価格が急変動した際にDis
 
 * クールダウン: 同一方向 (上昇/下落) は5分間再通知しない。反転は即通知。
 * 最大変化率のwindowを1通知に絞る。
+
+### 清算トリガー (`TRIGGER_MODE=liquidation` or `both`, `LIQ_ENABLED=1`)
+
+`metaAndAssetCtxs.openInterest` のドロップを清算推定として監視（Hyperliquidはグローバル清算RESTを提供しないためOI方式がActionsの5分pollで最も安定）。WS常駐時は `trades` の liquidationフラグ併用が理想。
+
+| Window | デフォルト閾値 (USD) | ドロップ率 | 説明 |
+|--------|-------------------|-----------|------|
+| 5分 | HYPE 100k / SOL 200k / NVDA 150k / MU 250k / SNDK 300k / SKHY 250k | 4% | `past OI - current OI` がUSD閾値 **または** 率閾値を超えたら発火 |
+| 15分 | HYPE 200k / SOL 350k / NVDA 300k / MU 450k / SNDK 600k / SKHY 450k | 7% | 3回前比 |
+| 単発 | HYPE 25k / SOL 50k / NVDA 50k / MU 75k / SNDK 100k / SKHY 75k | - | 5分ドロップが単発閾値のみ超えでも発火（出来高薄い銘柄のpctトリガー補完） |
+
+* 清算は常に `down` 方向。`price` と `liquidation` はクールダウン別枠。
+* `TRIGGER_MODE=both` で価格 **または** 清算のどちらかが発火。片方のみなら `price`/`liquidation` を指定。
+
+変更可否: **可**。現行価格ロジックは維持しつつ `TRIGGER_MODE` で切替。完全なリアルタイム清算（<1秒）を求める場合は `wss://api.hyperliquid.xyz/ws` 常駐化が必要で Actionsの5分粒度では最大5分遅延する点に注意。
 
 ## セットアップ
 
@@ -73,14 +90,15 @@ THRESHOLD_5M=0.001 python -m src.main
 ## 構成
 
 * `src/hyperliquid.py` — `POST https://api.hyperliquid.xyz/info {"type":"allMids","dex":""}` / `{"dex":"xyz"}` で全銘柄一括取得 (認証不要)。`metaAndAssetCtxs` で `prevDayPx` も取得。
-* `src/detector.py` — 銘柄ごとの変動判定 + クールダウン (銘柄ごとに独立)
-* `src/notifier.py` — Discord Embed生成 + 429リトライ (銘柄名をタイトル/フィールドに含む)
-* `src/main.py` — state読み込み(マイグレーション)→fetch→detect(銘柄ループ)→notify→保存
-* `src/config.py` — `SYMBOL_TO_HL` マッピングと `SYMBOLS` 定義
+* `src/liquidation.py` — `metaAndAssetCtxs.openInterest` の取得と清算推定フェッチ（WS併用時は `trades` liquidationフラグ）
+* `src/detector.py` — 銘柄ごとの価格判定 `detect()` + 清算判定 `detect_liquidation()`、クールダウンは `price`/`liquidation` 別枠
+* `src/notifier.py` — Discord Embed生成 + 429リトライ（価格は `🚀📉`、清算は `💥`）
+* `src/main.py` — state読み込み(マイグレーション)→fetch(価格+OI並列)→detect(銘柄ループ, `TRIGGER_MODE` で分岐)→notify→保存
+* `src/config.py` — `SYMBOL_TO_HL` / `SYMBOLS` / `TRIGGER_MODE` / `LIQ_*` 閾値定義
 
 ## カスタム
 
-環境変数で上書き可: `THRESHOLD_5M`, `THRESHOLD_15M`, `THRESHOLD_PREVDAY`, `COOLDOWN_SECONDS`, `SYMBOLS`
+環境変数で上書き可: `THRESHOLD_5M`, `THRESHOLD_15M`, `THRESHOLD_PREVDAY`, `COOLDOWN_SECONDS`, `SYMBOLS`, `TRIGGER_MODE`, `LIQ_ENABLED`, `LIQ_DROP_PCT_5M`, `LIQ_DROP_PCT_15M`, `LIQ_SINGLE_USD`, `LIQ_5M_USD`, `LIQ_15M_USD`
 
 ## 注意
 
