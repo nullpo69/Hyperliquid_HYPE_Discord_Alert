@@ -1,294 +1,2303 @@
 {
+  "version": 2,
   "symbols": {
-    "HYPE": {
+    "main:BTC": {
       "history": [
         {
-          "t": 1789069603.7630596,
-          "price": 80.2635
-        },
+          "t": 1789108513.0895066,
+          "price": 77155.5
+        }
+      ],
+      "oi_history": [
         {
-          "t": 1789077452.4317617,
-          "price": 80.2665
-        },
+          "t": 1789108513.0895066,
+          "oi": 2835708289.78455
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ETH": {
+      "history": [
         {
-          "t": 1789084079.432777,
-          "price": 79.1465
-        },
+          "t": 1789108513.0895066,
+          "price": 2463.75
+        }
+      ],
+      "oi_history": [
         {
-          "t": 1789090242.9428546,
-          "price": 78.7225
+          "t": 1789108513.0895066,
+          "oi": 2281977005.99625
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ATOM": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1.7535
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 3301944.51762
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:SOL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 99.5495
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 531328498.9881701
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:AVAX": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 7.5106
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 16968421.138436
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:BNB": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 714.145
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 44753073.33596
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:OP": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.09513
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 3246370.9155360004
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:LTC": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 53.04
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 23896362.6096
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ARB": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.1445
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 16343811.9714
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:DOGE": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.08387
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 68245313.71918
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:INJ": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 5.94415
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 21715458.854519997
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:SUI": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.73706
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 31179506.004864
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:kPEPE": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.003307
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 18039377.720174
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:CRV": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.34426
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 17209573.717924
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:LINK": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 11.5095
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 76133298.4128
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:XRP": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1.34965
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 210622958.9869
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:BCH": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 226.33
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 4998711.25286
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:APT": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.6368
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 3445949.119168
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:AAVE": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 123.13
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 73495228.23159999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:WLD": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.4015
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 38668938.3685
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:TRX": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.338705
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 14314684.67313
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:UNI": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 6.1678
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 48053926.84304
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ZRO": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1.0382
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 36583435.4576
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:DOT": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1.15855
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 5980528.71084
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:KAS": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.035405
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 2483788.42043
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ADA": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.20816
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 33664702.644480005
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:PENDLE": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 2.01375
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 9923437.799999999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:FET": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.165445
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 6632459.088780001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:NEAR": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 2.473
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 157828264.16939998
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ZEN": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 6.7044
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 2222693.64144
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:kBONK": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.002676
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 5553106.500456
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:JUP": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.23437
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 10753272.9357
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:JTO": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.413255
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 4253885.80055
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ONDO": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.34984
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 23360705.936
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:STRK": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.02881
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 5489015.02245
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:TAO": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 235.705
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 40153441.83543
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ETHFI": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.67649
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 26074180.152958002
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ENA": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.146115
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 48294880.13196
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:SAGA": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.01616
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 1323879.846048
         }
       ],
       "last_alert": {
-        "time": 1787382045.136845,
+        "time": 1789108513.0895066,
         "direction": "up",
-        "change": 0.10162690846239322,
-        "window": "prevDay",
-        "price": 80.3075,
-        "symbol": "HYPE",
-        "kind": "price"
+        "kind": "price",
+        "window": "prevDay"
       },
-      "oi_history": [
-        {
-          "t": 1789069603.7630596,
-          "oi": 21700767.38
-        },
-        {
-          "t": 1789077452.4317617,
-          "oi": 21617055.099999998
-        },
-        {
-          "t": 1789084079.432777,
-          "oi": 21568512.880000003
-        },
-        {
-          "t": 1789090242.9428546,
-          "oi": 21668576.900000017
-        }
-      ],
-      "last_liq_alert": {
-        "time": 1789084079.432777,
-        "direction": "down",
-        "kind": "liquidation",
-        "window": "liq15m",
-        "oi_drop_usd": 273232.77999999747,
-        "oi_drop_pct": 0.01250965853431687
-      }
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
     },
-    "NVDA": {
+    "main:HBAR": {
       "history": [
         {
-          "t": 1789069603.7630596,
-          "price": 218.67
-        },
+          "t": 1789108513.0895066,
+          "price": 0.074952
+        }
+      ],
+      "oi_history": [
         {
-          "t": 1789077452.4317617,
-          "price": 218.635
-        },
-        {
-          "t": 1789084079.432777,
-          "price": 218.06
-        },
-        {
-          "t": 1789090242.9428546,
-          "price": 218.505
+          "t": 1789108513.0895066,
+          "oi": 5464239.746976
         }
       ],
       "last_alert": null,
-      "oi_history": [
-        {
-          "t": 1789069603.7630596,
-          "oi": 508802.0220000001
-        },
-        {
-          "t": 1789077452.4317617,
-          "oi": 507305.14
-        },
-        {
-          "t": 1789084079.432777,
-          "oi": 507481.662
-        },
-        {
-          "t": 1789090242.9428546,
-          "oi": 508522.0060000001
-        }
-      ],
-      "last_liq_alert": {
-        "time": 1788975701.7765355,
-        "direction": "down",
-        "kind": "liquidation",
-        "window": "liq5m",
-        "oi_drop_usd": 20838.3719999998,
-        "oi_drop_pct": 0.040837730219034814
-      }
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
     },
-    "SNDK": {
+    "main:POL": {
       "history": [
         {
-          "t": 1789069603.7630596,
-          "price": 1707.95
-        },
+          "t": 1789108513.0895066,
+          "price": 0.092669
+        }
+      ],
+      "oi_history": [
         {
-          "t": 1789077452.4317617,
-          "price": 1688.95
-        },
-        {
-          "t": 1789084079.432777,
-          "price": 1680.65
-        },
-        {
-          "t": 1789090242.9428546,
-          "price": 1684.15
+          "t": 1789108513.0895066,
+          "oi": 3645986.001758
         }
       ],
       "last_alert": null,
-      "oi_history": [
-        {
-          "t": 1789069603.7630596,
-          "oi": 72504.872
-        },
-        {
-          "t": 1789077452.4317617,
-          "oi": 70352.158
-        },
-        {
-          "t": 1789084079.432777,
-          "oi": 70535.358
-        },
-        {
-          "t": 1789090242.9428546,
-          "oi": 71167.21
-        }
-      ],
-      "last_liq_alert": {
-        "time": 1788931049.4618368,
-        "direction": "down",
-        "kind": "liquidation",
-        "window": "liq15m",
-        "oi_drop_usd": 6317.752000000008,
-        "oi_drop_pct": 0.07658872130922742
-      }
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
     },
-    "SKHYNIX": {
+    "main:GRASS": {
       "history": [
         {
-          "t": 1789069603.7630596,
-          "price": 189.535
-        },
+          "t": 1789108513.0895066,
+          "price": 0.34853
+        }
+      ],
+      "oi_history": [
         {
-          "t": 1789077452.4317617,
-          "price": 188.58
-        },
-        {
-          "t": 1789084079.432777,
-          "price": 186.695
-        },
-        {
-          "t": 1789090242.9428546,
-          "price": 186.12
+          "t": 1789108513.0895066,
+          "oi": 12521716.147486
         }
       ],
       "last_alert": null,
-      "oi_history": [
-        {
-          "t": 1789069603.7630596,
-          "oi": 1225248.74
-        },
-        {
-          "t": 1789077452.4317617,
-          "oi": 1207157.880000002
-        },
-        {
-          "t": 1789084079.432777,
-          "oi": 1207263.2400000007
-        },
-        {
-          "t": 1789090242.9428546,
-          "oi": 1221161.0000000002
-        }
-      ],
-      "last_liq_alert": {
-        "time": 1788860978.9614148,
-        "direction": "down",
-        "kind": "liquidation",
-        "window": "liq15m",
-        "oi_drop_usd": 82427.68000000005,
-        "oi_drop_pct": 0.1115408713737473
-      }
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
     },
-    "SOL": {
+    "main:XLM": {
       "history": [
         {
-          "t": 1789069603.7630596,
-          "price": 99.8575
-        },
+          "t": 1789108513.0895066,
+          "price": 0.17618
+        }
+      ],
+      "oi_history": [
         {
-          "t": 1789077452.4317617,
-          "price": 99.8145
-        },
-        {
-          "t": 1789084079.432777,
-          "price": 99.0295
-        },
-        {
-          "t": 1789090242.9428546,
-          "price": 98.9635
+          "t": 1789108513.0895066,
+          "oi": 10052140.52676
         }
       ],
       "last_alert": null,
-      "oi_history": [
-        {
-          "t": 1789069603.7630596,
-          "oi": 5353557.48
-        },
-        {
-          "t": 1789077452.4317617,
-          "oi": 5343348.119999999
-        },
-        {
-          "t": 1789084079.432777,
-          "oi": 5442621.140000002
-        },
-        {
-          "t": 1789090242.9428546,
-          "oi": 5375588.540000003
-        }
-      ],
-      "last_liq_alert": {
-        "time": 1789090242.9428546,
-        "direction": "down",
-        "kind": "liquidation",
-        "window": "liq5m",
-        "oi_drop_usd": 67032.59999999963,
-        "oi_drop_pct": 0.012316234820636367
-      }
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
     },
-    "MU": {
+    "main:HYPE": {
       "history": [
         {
-          "t": 1789069603.7630596,
-          "price": 981.26
-        },
+          "t": 1789108513.0895066,
+          "price": 79.4755
+        }
+      ],
+      "oi_history": [
         {
-          "t": 1789077452.4317617,
-          "price": 978.225
-        },
-        {
-          "t": 1789084079.432777,
-          "price": 973.06
-        },
-        {
-          "t": 1789090242.9428546,
-          "price": 977.165
+          "t": 1789108513.0895066,
+          "oi": 1708688366.6135397
         }
       ],
       "last_alert": null,
-      "oi_history": [
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:VIRTUAL": {
+      "history": [
         {
-          "t": 1789069603.7630596,
-          "oi": 169483.732
-        },
-        {
-          "t": 1789077452.4317617,
-          "oi": 151621.368
-        },
-        {
-          "t": 1789084079.432777,
-          "oi": 148807.6499999998
-        },
-        {
-          "t": 1789090242.9428546,
-          "oi": 145735.7100000001
+          "t": 1789108513.0895066,
+          "price": 0.63865
         }
       ],
-      "last_liq_alert": {
-        "time": 1789090242.9428546,
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 9365967.40489
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:PENGU": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.007496
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 7391349.423424
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:FARTCOIN": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.14091
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 28682708.720358
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:SPX": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.48154
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 5592000.456836
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:MORPHO": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 2.3199
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 5285469.00024
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:TRUMP": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1.9691
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 12309490.358620003
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:VVV": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 24.1515
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 61995477.97665
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:PAXG": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 4351.95
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 22778027.9649
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:PUMP": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.003759
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 156317146.400352
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:XPL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.085757
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 45736746.5072
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:WLFI": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.055516
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 11349113.895664
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ASTER": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.70667
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 25924788.20616
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:HEMI": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.007095
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 1316516.86848
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ZEC": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1100.15
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 514074461.50500005
+        }
+      ],
+      "last_alert": {
+        "time": 1789108513.0895066,
         "direction": "down",
-        "kind": "liquidation",
-        "window": "liq15m",
-        "oi_drop_usd": 23748.02199999988,
-        "oi_drop_pct": 0.14011977267529063
-      }
+        "kind": "price",
+        "window": "prevDay"
+      },
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:MON": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.023339
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 29538429.530192
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:MET": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.230345
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 4486930.79572
+        }
+      ],
+      "last_alert": {
+        "time": 1789108513.0895066,
+        "direction": "up",
+        "kind": "price",
+        "window": "prevDay"
+      },
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:ICP": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 2.7588
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 3343473.03576
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:AERO": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.55378
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 16227637.959560001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:LIT": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 4.50505
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 189035826.40359998
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:XMR": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 513.31
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 70549199.09911999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:DASH": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 55.8435
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 5855102.742269999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:SKR": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.017795
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 2100380.40093
+        }
+      ],
+      "last_alert": {
+        "time": 1789108513.0895066,
+        "direction": "down",
+        "kind": "price",
+        "window": "prevDay"
+      },
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:CHIP": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.045138
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 10759324.425455999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:GRAM": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1.3552
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 28610047.312
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:CASHCAT": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.16586
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 43082372.179800004
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:PONS": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.65044
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 99332783.6676
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "main:USELESS": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 0.217885
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 5611299.168649999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:XYZ100": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 29203.5
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 209770282.44480002
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:TSLA": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 364.305
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 41265845.94678
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:NVDA": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 219.465
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 112004798.47272001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:GOLD": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 4351.65
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 352951974.57299995
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:HOOD": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 112.235
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 62260235.80523001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:INTC": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 100.935
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 59884218.7128
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:PLTR": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 166.355
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 11000906.763209999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:COIN": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 172.53
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 13533004.411740001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:META": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 644.425
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 30851318.4465
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:AAPL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 325.52
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 86150752.76079999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:MSFT": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 491.18
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 23239804.47376
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:ORCL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 161.255
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 28052968.28001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:GOOGL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 332.16
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 106623332.76288001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:AMZN": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 252.58
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 22832819.789440002
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:AMD": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 506.025
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 13242183.405749999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:MU": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 984.09
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 139958978.33934
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:SNDK": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1690.95
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 123412443.60360001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:MSTR": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 129.285
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 41578268.285969995
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:CRCL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 90.948
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 94614492.22367999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:SKHX": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1353.6
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 393428618.20800006
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:TSM": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 427.21
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 7916338.86162
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:JPY": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 154.11
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 36845654.4192
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:EUR": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1.16215
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 32453893.16268
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:SILVER": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 63.92
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 135227914.5088
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:BABA": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 109.5
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 12093028.889999999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:CL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 98.329
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 182727846.79487798
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:COPPER": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 6.5839
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 17521642.343858
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:NATGAS": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 2.9265
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 11348738.733
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:SMSN": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 193.01
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 38858218.45888
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:PLATINUM": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 1800.45
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 4142043.61209
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:CRWV": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 90.5295
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 4849696.0950299995
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:GME": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 21.109
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 2593571.21694
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:JP225": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 64002.0
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 2193206.45556
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:KIOXIA": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 350.7
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 6337693.2864
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:EWY": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 186.93
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 8963499.123
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:EWJ": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 97.043
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 1420115.8109260001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:BRENTOIL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 102.705
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 241895180.9625
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:SP500": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 7617.75
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 412644528.555
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:LITE": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 946.6
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 9690118.909200002
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:PURRDAT": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 11.0415
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 8770241.366999999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:MRVL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 228.27
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 17885995.4112
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:RKLB": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 62.5485
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 11966610.13905
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:DRAM": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 59.0745
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 71728576.9023
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:CBRS": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 192.345
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 39378561.036
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:ARM": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 255.095
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 3965681.3605
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:SPCX": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 148.925
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 164106488.96249998
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:MINIMAX": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 34.072
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 10371435.70864
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:BB": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 7.5624
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 8320102.568159999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:DELL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 512.545
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 7073274.763499999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:AVGO": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 361.5
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 12938988.75
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:NBIS": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 231.265
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 30568196.048299998
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:WDC": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 463.52
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 1630527.08512
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:BE": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 264.38
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 6461410.1868
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:ZHIPU": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 100.535
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 15485575.95415
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:QCOM": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 177.41
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 5725233.592
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:SHAZ": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 56.2875
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 2038223.2852500002
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:SKHY": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 189.945
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 232001645.58269995
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:CXMT": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 8.3352
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 56830102.092
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:KORU": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 22.554
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 3760721.622
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:UNITREE": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 70.873
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 14644007.47106
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:SOXL": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 116.505
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 7711020.900899999
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:IREN": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 44.0245
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 1690373.5069
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
+    },
+    "xyz:xyz:MRNA": {
+      "history": [
+        {
+          "t": 1789108513.0895066,
+          "price": 136.78
+        }
+      ],
+      "oi_history": [
+        {
+          "t": 1789108513.0895066,
+          "oi": 1667556.1056000001
+        }
+      ],
+      "last_alert": null,
+      "last_liq_alert": null,
+      "seen_at": 1789108513.0895066
     }
   }
 }
