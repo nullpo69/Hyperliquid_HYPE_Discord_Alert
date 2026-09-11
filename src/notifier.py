@@ -9,6 +9,25 @@ from src.detector import Alert
 JST = datetime.timezone(datetime.timedelta(hours=9))
 
 
+def _severity_emojis(value: float, thresholds: tuple[float, ...], emoji: str = "💥") -> str:
+    """Return more emojis as a drop moves through the configured severity tiers."""
+    level = sum(value >= threshold for threshold in thresholds)
+    return emoji * max(1, min(level, len(thresholds)))
+
+
+def _liquidation_emojis(drop_usd: float, drop_pct: float) -> tuple[str, str]:
+    """Build independent visual severity indicators for USD and percentage drops."""
+    amount = _severity_emojis(
+        drop_usd,
+        (50_000, 150_000, 300_000, 500_000, 1_000_000),
+    )
+    percentage = _severity_emojis(
+        drop_pct,
+        (0.04, 0.07, 0.10, 0.15, 0.25),
+    )
+    return amount, percentage
+
+
 def build_embed(alert: Alert) -> dict:
     is_up = alert.direction == "up"
     is_liq = alert.kind == "liquidation"
@@ -19,8 +38,13 @@ def build_embed(alert: Alert) -> dict:
     if is_liq:
         drop = alert.oi_drop_usd or 0
         drop_pct = (alert.oi_drop_pct or 0) * 100
-        title = f"{emoji} {alert.symbol} 清算急増 -{drop_pct:.2f}% ({window_label})"
-        description = f"**OI現在:** `${alert.current_price:,.0f}`\n**OIドロップ:** `-${drop:,.0f}` (`-{drop_pct:.2f}%`)"
+        amount_emojis, percentage_emojis = _liquidation_emojis(drop, drop_pct / 100)
+        title = f"{percentage_emojis} {alert.symbol} 清算急増 -{drop_pct:.2f}% ({window_label})"
+        description = (
+            f"**OI現在:** `${alert.current_price:,.0f}`\n"
+            f"**OIドロップ額:** `-${drop:,.0f}` {amount_emojis}\n"
+            f"**OIドロップ率:** `-{drop_pct:.2f}%` {percentage_emojis}"
+        )
         footer = f"Hyperliquid {alert.symbol} Liquidation • {now_jst}"
     else:
         pct = alert.change * 100
