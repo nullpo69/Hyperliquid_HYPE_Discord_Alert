@@ -41,6 +41,9 @@ jobs:
           LIQ_ENABLED: "1"
           LIQ_DROP_PCT_5M: "0.04"
           LIQ_DROP_PCT_15M: "0.07"
+          MIN_OPEN_INTEREST_USD: "1000000"
+          MIN_DAY_VOLUME_USD: "1000000"
+          MAX_ALERTS_PER_RUN: "20"
         run: python -m src.main
 
       - name: Commit state if changed

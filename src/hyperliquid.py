@@ -1,139 +1,80 @@
+"""Dynamic Hyperliquid perpetual-market discovery and snapshots."""
+from __future__ import annotations
+
 import asyncio
+import logging
+
 import httpx
-from src.config import HL_API_URL, SYMBOL_TO_HL, SYMBOLS
+
+from src.config import HL_API_URL, MIN_DAY_VOLUME_USD, MIN_OPEN_INTEREST_USD, MONITORED_DEXES, SYMBOLS
+
+log = logging.getLogger(__name__)
 
 
-async def fetch_all_prices(
-    client: httpx.AsyncClient,
-    symbols: list[str] | None = None,
-) -> dict[str, tuple[float, float | None]]:
+def market_key(dex: str, name: str) -> str:
+    """A stable key; ticker names can overlap across HIP-3 DEXes."""
+    return f"{dex or 'main'}:{name}"
+
+
+def display_name(dex: str, name: str) -> str:
+    ticker = name.removeprefix("xyz:")
+    return ticker if not dex else f"{dex}/{ticker}"
+
+
+async def fetch_market_snapshots(client: httpx.AsyncClient) -> dict[str, dict]:
+    """Fetch every eligible perp from main and trade.xyz in four batched requests.
+
+    `openInterest` is coin-denominated in the API, so it is converted to USD with
+    `markPx`; this keeps the OI thresholds meaningful across markets.
     """
-    Fetch mid price and prevDayPx for multiple symbols.
-    Returns: {display_symbol: (price, prev_day_price)}
-    Internally batches into dex-grouped calls (allMids + metaAndAssetCtxs per dex).
-    """
-    if symbols is None:
-        symbols = SYMBOLS
-
-    # Group by dex
-    dex_to_hl_names: dict[str, list[tuple[str, str]]] = {}  # dex -> [(display, hl_name)]
-    for sym in symbols:
-        if sym not in SYMBOL_TO_HL:
-            raise ValueError(f"Unknown symbol '{sym}' — no mapping in SYMBOL_TO_HL")
-        dex, hl_name = SYMBOL_TO_HL[sym]
-        dex_to_hl_names.setdefault(dex, []).append((sym, hl_name))
-
-    dexes = list(dex_to_hl_names.keys())
-
-    # Prepare concurrent fetches: allMids + metaAndAssetCtxs per dex
     async def fetch_dex(dex: str):
-        # allMids
-        payload_mids: dict = {"type": "allMids"}
-        if dex:
-            payload_mids["dex"] = dex
-        resp = await client.post(HL_API_URL, json=payload_mids, timeout=10)
-        resp.raise_for_status()
-        mids: dict = resp.json()
+        base = {"dex": dex} if dex else {}
+        mids_request = client.post(HL_API_URL, json={"type": "allMids", **base}, timeout=15)
+        meta_request = client.post(HL_API_URL, json={"type": "metaAndAssetCtxs", **base}, timeout=15)
+        mids_response, meta_response = await asyncio.gather(mids_request, meta_request)
+        mids_response.raise_for_status()
+        meta_response.raise_for_status()
+        meta, contexts = meta_response.json()
+        return dex, mids_response.json(), meta.get("universe", []), contexts
 
-        # prevDayPx via metaAndAssetCtxs (best effort)
-        prev_map: dict[str, float | None] = {}
-        try:
-            payload_meta: dict = {"type": "metaAndAssetCtxs"}
-            if dex:
-                payload_meta["dex"] = dex
-            resp2 = await client.post(HL_API_URL, json=payload_meta, timeout=10)
-            resp2.raise_for_status()
-            meta, ctxs = resp2.json()
-            universe = meta.get("universe", [])
-            for u, c in zip(universe, ctxs):
-                name = u.get("name")
-                if name:
-                    try:
-                        v = c.get("prevDayPx")
-                        prev_map[name] = float(v) if v else None
-                    except (TypeError, ValueError):
-                        prev_map[name] = None
-        except Exception:
-            pass
-        return mids, prev_map
-
-    # Run dex fetches concurrently — isolate failures per dex
-    dex_to_mids: dict[str, dict] = {}
-    dex_to_prev: dict[str, dict] = {}
-
-    async def safe_fetch_dex(dex: str):
-        try:
-            mids, prev_map = await fetch_dex(dex)
-            return dex, mids, prev_map, None
-        except Exception as e:
-            return dex, {}, {}, e
-
-    results = await asyncio.gather(*[safe_fetch_dex(d) for d in dexes])
-    for dex, mids, prev_map, err in results:
-        if err is not None:
-            import logging
-            logging.getLogger(__name__).warning(f"Failed to fetch dex '{dex}': {err}")
+    results = await asyncio.gather(*(fetch_dex(dex) for dex in MONITORED_DEXES), return_exceptions=True)
+    markets: dict[str, dict] = {}
+    for result in results:
+        if isinstance(result, Exception):
+            log.warning("Market discovery failed: %s", result)
             continue
-        dex_to_mids[dex] = mids
-        dex_to_prev[dex] = prev_map
-
-    # Build output per requested symbol — skip missing with warning instead of crashing all
-    out: dict[str, tuple[float, float | None]] = {}
-    for sym in symbols:
-        dex, hl_name = SYMBOL_TO_HL[sym]
-        mids = dex_to_mids.get(dex)
-        if mids is None:
-            import logging
-            logging.getLogger(__name__).warning(f"{sym} ({hl_name}) skipped: dex '{dex}' fetch failed")
-            continue
-        prev_map = dex_to_prev.get(dex, {})
-        price_str = mids.get(hl_name)
-        if price_str is None:
-            import logging
-            logging.getLogger(__name__).warning(f"{sym} ({hl_name}) not found in allMids (dex='{dex}'), skipping")
-            continue
-        try:
-            price = float(price_str)
-        except (TypeError, ValueError):
-            import logging
-            logging.getLogger(__name__).warning(f"{sym} ({hl_name}) invalid price '{price_str}', skipping")
-            continue
-        prev_day = prev_map.get(hl_name)
-        out[sym] = (price, prev_day)
-
-    return out
-
-
-async def fetch_hype_price(client: httpx.AsyncClient) -> tuple[float, float | None]:
-    """
-    Fetch HYPE mid price. Kept for backward compatibility.
-    Returns: (price, prev_day_price)
-    """
-    result = await fetch_all_prices(client, symbols=["HYPE"])
-    return result["HYPE"]
+        dex, mids, universe, contexts = result
+        for asset, context in zip(universe, contexts):
+            name = asset.get("name")
+            if not name:
+                continue
+            ticker = name.removeprefix("xyz:").upper()
+            if SYMBOLS and ticker not in SYMBOLS and name.upper() not in SYMBOLS:
+                continue
+            try:
+                price = float(mids.get(name) or context.get("markPx") or 0)
+                open_interest = float(context.get("openInterest") or 0)
+                day_volume = float(context.get("dayNtlVlm") or 0)
+            except (TypeError, ValueError):
+                continue
+            oi_usd = open_interest * price
+            if price <= 0 or oi_usd < MIN_OPEN_INTEREST_USD or day_volume < MIN_DAY_VOLUME_USD:
+                continue
+            key = market_key(dex, name)
+            markets[key] = {
+                "dex": dex,
+                "name": name,
+                "symbol": display_name(dex, name),
+                "price": price,
+                "prev_day_price": _float_or_none(context.get("prevDayPx")),
+                "oi_usd": oi_usd,
+                "day_volume_usd": day_volume,
+            }
+    return markets
 
 
-def fetch_hype_price_sync() -> tuple[float, float | None]:
-    """Sync wrapper for tests / simple usage."""
-    import httpx as _httpx
-
-    async def _run():
-        async with _httpx.AsyncClient() as c:
-            return await fetch_hype_price(c)
-
-    import asyncio
-
-    return asyncio.run(_run())
-
-
-async def fetch_all_prices_sync_wrapper(symbols: list[str] | None = None) -> dict[str, tuple[float, float | None]]:
-    """Sync wrapper for fetch_all_prices."""
-    import httpx as _httpx
-
-    async def _run():
-        async with _httpx.AsyncClient() as c:
-            return await fetch_all_prices(c, symbols=symbols)
-
-    import asyncio
-
-    return asyncio.run(_run())
+def _float_or_none(value: object) -> float | None:
+    try:
+        return float(value) if value is not None else None
+    except (TypeError, ValueError):
+        return None

@@ -1,110 +1,131 @@
 # Hyperliquid Discord Alert
 
-HYPE / NVDA / SNDK / SKHYNIX (SKHY) / SOL / MU 価格が急変動した際にDiscord Webhookへ通知するBot。Hyperliquid API (`allMids` + `metaAndAssetCtxs`) を5分ごとにGitHub Actionsでポーリングします。
+Hyperliquid main DEX と trade.xyz（Hyperliquid API上のDEX名: `xyz`）の perpetual market を監視し、価格急変またはOI急減をDiscord Webhookへ通知するBotです。GitHub Actionsでは5分ごと、ローカル常駐モードでは任意の秒数ごとに実行できます。
+
+市場一覧は毎回Hyperliquid APIから取得します。新規上場はコードの変更なしで対象候補になります。
+
+## 監視対象
+
+既定値の `MONITORED_DEXES=,xyz` は次の2つを対象にします。
+
+| DEX | 設定値 | 対象 |
+| --- | --- | --- |
+| Hyperliquid main | 空文字 | main perpetuals |
+| trade.xyz | `xyz` | trade.xyz perpetuals |
+
+`metaAndAssetCtxs` のperpetual universeから市場を列挙するため、spot市場は対象外です。取得したすべての市場のうち、既定では次の両方を満たすものだけを監視します。
+
+| フィルター | 既定値 | 判定方法 |
+| --- | ---: | --- |
+| 最低OI | $1,000,000 | `openInterest × markPx` |
+| 最低24時間想定出来高 | $1,000,000 | APIの `dayNtlVlm` |
+
+これにより低流動性銘柄による通知の集中を抑えます。流動性を問わず全上場perpetualを監視するには、`MIN_OPEN_INTEREST_USD=0` と `MIN_DAY_VOLUME_USD=0` を設定してください。
+
+`SYMBOLS` を指定すると、動的な全銘柄監視ではなくtickerのallow-listになります。例: `SYMBOLS=BTC,ETH,HYPE,NVDA`。
 
 ## 通知条件
 
-### 価格トリガー (`TRIGGER_MODE=price` or `both`)
+`TRIGGER_MODE=both` が既定です。`price` または `liquidation` に変更すると片方だけを使えます。
 
-| Window | 閾値 | 説明 |
-|--------|------|------|
-| 5分 | ±5% | 直前run (5分前) との比較 |
-| 15分 | ±8% | 3回前run (15分前) との比較 |
-| 前日比 | ±10% | `prevDayPx` との比較 |
+### 価格変動
 
-* クールダウン: 同一方向 (上昇/下落) は5分間再通知しない。反転は即通知。
-* 最大変化率のwindowを1通知に絞る。
+| 比較対象 | 環境変数 | 既定値 |
+| --- | --- | ---: |
+| 直近の実行値（約5分前） | `THRESHOLD_5M` | ±5% |
+| 3回前の実行値（約15分前） | `THRESHOLD_15M` | ±8% |
+| APIの前日価格 | `THRESHOLD_PREVDAY` | ±10% |
 
-### 清算トリガー (`TRIGGER_MODE=liquidation` or `both`, `LIQ_ENABLED=1`)
+複数条件に該当した場合は、変化率が最大のものだけを通知します。同方向の価格通知は `COOLDOWN_SECONDS`（既定300秒）以内では抑制し、反対方向への転換は直ちに通知します。
 
-`metaAndAssetCtxs.openInterest` のドロップを清算推定として監視（Hyperliquidはグローバル清算RESTを提供しないためOI方式がActionsの5分pollで最も安定）。WS常駐時は `trades` の liquidationフラグ併用が理想。
+### OI急減（清算推定）
 
-| Window | デフォルト閾値 (USD) | ドロップ率 | 説明 |
-|--------|-------------------|-----------|------|
-| 5分 | HYPE 100k / SOL 200k / NVDA 150k / MU 250k / SNDK 300k / SKHY 250k | 4% | `past OI - current OI` がUSD閾値 **または** 率閾値を超えたら発火 |
-| 15分 | HYPE 200k / SOL 350k / NVDA 300k / MU 450k / SNDK 600k / SKHY 450k | 7% | 3回前比 |
-| 単発 | HYPE 25k / SOL 50k / NVDA 50k / MU 75k / SNDK 100k / SKHY 75k | - | 5分ドロップが単発閾値のみ超えでも発火（出来高薄い銘柄のpctトリガー補完） |
+HyperliquidのREST APIにグローバルな清算一覧はないため、OIの減少を清算の推定として扱います。OIはAPIのcoin建て `openInterest` を `markPx` でUSD換算して判定します。
 
-* 清算は常に `down` 方向。`price` と `liquidation` はクールダウン別枠。
-* `TRIGGER_MODE=both` で価格 **または** 清算のどちらかが発火。片方のみなら `price`/`liquidation` を指定。
+| 比較対象 | USD条件 | 比率条件 |
+| --- | ---: | ---: |
+| 約5分前 | `LIQ_5M_USD`（$150,000） | `LIQ_DROP_PCT_5M`（4%） |
+| 約15分前 | `LIQ_15M_USD`（$300,000） | `LIQ_DROP_PCT_15M`（7%） |
 
-変更可否: **可**。現行価格ロジックは維持しつつ `TRIGGER_MODE` で切替。完全なリアルタイム清算（<1秒）を求める場合は `wss://api.hyperliquid.xyz/ws` 常駐化が必要で Actionsの5分粒度では最大5分遅延する点に注意。
+USD条件または比率条件のいずれかを満たすと通知します。`LIQ_SINGLE_USD`（既定$50,000）は5分判定の補助閾値です。OI通知は価格通知と別のクールダウンを持ちます。
+
+> OI減少には通常の決済やポジション移動も含まれます。これは清算イベントの確定情報ではありません。
+
+## Discordの通知制御
+
+Discordの負荷を抑えるため、以下を実装しています。
+
+* 1 Webhookリクエストに最大10件のEmbedをまとめて送信します。
+* 1回の監視実行で送信するアラートは `MAX_ALERTS_PER_RUN`（既定20件）までです。
+* 上限超過分は送信せず、最初の通知に省略件数を表示します。
+* 優先順位はOI急減アラート、次に価格変動アラートです。同種内では変化の大きいものを優先します。
+* HTTP 429時はDiscordが返す `retry_after` を待って再試行します。最大回数は `MAX_WEBHOOK_RETRIES`（既定5回）です。
+* `allowed_mentions` を空にし、ticker等による意図しないメンションを防ぎます。
+
+## API負荷
+
+一回の実行では、各DEXに対して次の2リクエストだけを行います。
+
+1. `allMids` — 現在価格
+2. `metaAndAssetCtxs` — 上場市場、前日価格、OI、出来高
+
+mainとtrade.xyzを監視する既定構成では、合計4リクエストです。銘柄数が増えてもリクエスト数は増えません。価格、前日比、OI判定は同じ取得結果を共用します。
 
 ## セットアップ
 
-### 1. Discord Webhook
+### GitHub Actions
 
-Discordチャンネル → 設定 → 連携サービス → ウェブフック → URLをコピー
+1. DiscordチャンネルでWebhookを作成します。
+2. リポジトリの **Settings → Secrets and variables → Actions** に `DISCORD_WEBHOOK_URL` を登録します。
+3. `.github/workflows/hype-alert.yml` を含めてpushします。
 
-### 2. GitHub Privateリポジトリ
+ワークフローはUTCで5分ごとに実行されます。stateファイルをコミットして価格・OI履歴を次回実行へ引き継ぎます。GitHub Actionsのスケジュール実行は混雑時に遅延することがあります。
 
-```bash
-gh repo create Hyperliquid_HYPE_Discord_Alert --private --source=. --push
-```
-
-### 3. GitHub Secretsに登録
-
-GitHub → Settings → Secrets and variables → Actions → New secret
-
-* `DISCORD_WEBHOOK_URL` = コピーしたWebhook URL
-
-> ローカル開発では `webhook/webhook.txt` にURLを1行で置くか `.env` で設定。どちらも `.gitignore` で除外済み。
-
-### 4. Actions有効化
-
-Push後、Actionsタブで `HYPE Alert` が `*/5 * * * *` で自動実行。手動テストは `Run workflow`。
-
-## ローカル実行
+### ローカル実行
 
 ```bash
 pip install -r requirements.txt
-# ワンショット
+Copy-Item .env.example .env
+# .env にDISCORD_WEBHOOK_URLを設定
 python -m src.main
-# 常駐ループ (30秒ポーリング)
+```
+
+継続実行する場合:
+
+```bash
+# 既定では30秒間隔
 python -m src.main --loop
 ```
 
-閾値を一時的に下げてテスト:
+## 環境変数
 
-```bash
-THRESHOLD_5M=0.001 python -m src.main
-```
+| 変数 | 既定値 | 説明 |
+| --- | --- | --- |
+| `DISCORD_WEBHOOK_URL` | 空 | Discord incoming webhook URL。 |
+| `MONITORED_DEXES` | `,xyz` | 監視するDEX。空要素はmainを表す。 |
+| `SYMBOLS` | 空 | 任意のticker allow-list。空なら流動性条件を満たすすべて。 |
+| `MIN_OPEN_INTEREST_USD` | `1000000` | 監視対象にする最低USD OI。 |
+| `MIN_DAY_VOLUME_USD` | `1000000` | 監視対象にする最低24時間想定出来高。 |
+| `THRESHOLD_5M` | `0.05` | 5分価格変動率。 |
+| `THRESHOLD_15M` | `0.08` | 15分価格変動率。 |
+| `THRESHOLD_PREVDAY` | `0.10` | 前日比変動率。 |
+| `COOLDOWN_SECONDS` | `300` | 同方向通知の抑制時間。 |
+| `TRIGGER_MODE` | `both` | `price` / `liquidation` / `both`。 |
+| `LIQ_ENABLED` | `1` | `0` / `false` / `no` でOI監視を無効化。 |
+| `LIQ_SINGLE_USD` | `50000` | 5分OI判定の補助USD閾値。 |
+| `LIQ_5M_USD` / `LIQ_15M_USD` | `150000` / `300000` | OI急減のUSD閾値。 |
+| `LIQ_DROP_PCT_5M` / `LIQ_DROP_PCT_15M` | `0.04` / `0.07` | OI急減率の閾値。 |
+| `MAX_ALERTS_PER_RUN` | `20` | 1実行でDiscordへ送る最大件数。 |
+| `MAX_WEBHOOK_RETRIES` | `5` | 429時の最大再試行回数。 |
+| `STATE_RETENTION_SECONDS` | `604800` | 非掲載銘柄のstateを残す秒数。 |
+| `POLL_SECONDS` | `30` | `--loop` 時の実行間隔（秒）。 |
 
-## 対象銘柄
+## State管理
 
-| 表示シンボル | Hyperliquid ticker | dex |
-|---|---|---|
-| HYPE | `HYPE` | `` (perp) |
-| NVDA | `xyz:NVDA` | `xyz` |
-| SNDK | `xyz:SNDK` | `xyz` |
-| SKHYNIX | `xyz:SKHY` | `xyz` |
-| SOL | `SOL` | `` (perp) |
-| MU | `xyz:MU` | `xyz` |
+stateは `.state/hype_state.json` に保存します。市場ごとに直近4回の価格・OI履歴、および最終通知時刻を保持します。状態キーにはDEX名を含めるため同名tickerでも衝突しません。旧版の固定銘柄stateは、初回実行時にversion 2形式へリセットされます。
 
-環境変数 `SYMBOLS` で絞り込み可 (例: `SYMBOLS=HYPE,SOL`)。未指定なら全6銘柄を監視。
+## 注意事項
 
-## 状態管理
-
-`.state/hype_state.json` はActionsが毎回 `git push` して永続化。`symbols` ごとに `history` は直近4件 (20分) のみ保持。旧形式 (`{"history":...}`) からの自動マイグレーション対応。
-
-## 構成
-
-* `src/hyperliquid.py` — `POST https://api.hyperliquid.xyz/info {"type":"allMids","dex":""}` / `{"dex":"xyz"}` で全銘柄一括取得 (認証不要)。`metaAndAssetCtxs` で `prevDayPx` も取得。
-* `src/liquidation.py` — `metaAndAssetCtxs.openInterest` の取得と清算推定フェッチ（WS併用時は `trades` liquidationフラグ）
-* `src/detector.py` — 銘柄ごとの価格判定 `detect()` + 清算判定 `detect_liquidation()`、クールダウンは `price`/`liquidation` 別枠
-* `src/notifier.py` — Discord Embed生成 + 429リトライ（価格は `🚀📉`、清算は `💥`）
-* `src/main.py` — state読み込み(マイグレーション)→fetch(価格+OI並列)→detect(銘柄ループ, `TRIGGER_MODE` で分岐)→notify→保存
-* `src/config.py` — `SYMBOL_TO_HL` / `SYMBOLS` / `TRIGGER_MODE` / `LIQ_*` 閾値定義
-
-## カスタム
-
-環境変数で上書き可: `THRESHOLD_5M`, `THRESHOLD_15M`, `THRESHOLD_PREVDAY`, `COOLDOWN_SECONDS`, `SYMBOLS`, `TRIGGER_MODE`, `LIQ_ENABLED`, `LIQ_DROP_PCT_5M`, `LIQ_DROP_PCT_15M`, `LIQ_SINGLE_USD`, `LIQ_5M_USD`, `LIQ_15M_USD`
-
-## 注意
-
-* GitHub Actionsのcronは最短5分。1分粒度が必要なら `Fly.io` / `VPS` + `--loop` へ移行。
-* Webhook URLは絶対にコミットしないこと。
-
-## 作成について
-
-本プロジェクトは [Muse Spark 1.2 Free](https://opencode.ai) (`opencode/muse-spark-1.2-contributor-free`) を使用して作成されました。
+* Webhook URLや`.env`はコミットしないでください。
+* 5分ポーリングは急変の検知に最大約5分の遅延が発生します。秒単位の通知が必要な場合はWebSocketを用いる常駐方式が必要です。
+* フィルターを0にする場合、低流動性銘柄のノイズや通知上限超過が増えます。`MAX_ALERTS_PER_RUN`を保守的に設定してください。
