@@ -47,7 +47,7 @@ HyperliquidのREST APIにグローバルな清算一覧はないため、OIの�
 | 約5分前 | `LIQ_5M_USD`（$150,000） | `LIQ_DROP_PCT_5M`（4%） |
 | 約15分前 | `LIQ_15M_USD`（$300,000） | `LIQ_DROP_PCT_15M`（7%） |
 
-USD条件または比率条件のいずれかを満たすと通知します。`LIQ_SINGLE_USD`（既定$50,000）は5分判定の補助閾値です。OI通知は価格通知と別のクールダウンを持ちます。
+USD条件と比率条件の両方を満たす場合のみ通知します。これにより、金額だけ・率だけが大きいOI減少は通知されません。OI通知は価格通知と別のクールダウンを持ちます。
 
 Discord通知では、OIドロップ額とドロップ率をそれぞれ絵文字で強度表示します。減少量が大きいほど `💥` が増え、タイトルはドロップ率、本文はドロップ額・率の各強度を示します。段階値は額が `$50k / $150k / $300k / $500k / $1m`、率が `4% / 7% / 10% / 15% / 25%` です。
 
@@ -114,7 +114,6 @@ python -m src.main --loop
 | `COOLDOWN_SECONDS` | `300` | 同方向通知の抑制時間。 |
 | `TRIGGER_MODE` | `both` | `price` / `liquidation` / `both`。 |
 | `LIQ_ENABLED` | `1` | `0` / `false` / `no` でOI監視を無効化。 |
-| `LIQ_SINGLE_USD` | `50000` | 5分OI判定の補助USD閾値。 |
 | `LIQ_5M_USD` / `LIQ_15M_USD` | `150000` / `300000` | OI急減のUSD閾値。 |
 | `LIQ_DROP_PCT_5M` / `LIQ_DROP_PCT_15M` | `0.04` / `0.07` | OI急減率の閾値。 |
 | `MAX_ALERTS_PER_RUN` | `20` | 1実行でDiscordへ送る最大件数。 |

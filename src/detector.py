@@ -92,7 +92,6 @@ def detect_liquidation(
     cooldown: int,
     last_alert: dict | None,
     symbol: str,
-    thresh_single_usd: float,
     thresh_5m_usd: float,
     thresh_15m_usd: float,
     drop_pct_5m: float,
@@ -101,11 +100,9 @@ def detect_liquidation(
     """
     OIドロップを清算推定として検知。
     oi_history: list of {"t": float, "oi": float}  (past only, oldest first)
-    発火条件 (OR):
-      - 5m OIドロップ額 >= thresh_5m_usd または ドロップ率 >= drop_pct_5m
+    発火条件 (AND):
+      - 5m OIドロップ額 >= thresh_5m_usd かつ ドロップ率 >= drop_pct_5m
       - 15m 同上 (3回前)
-    単発 thresh_single_usd は 5mドロップ額がそれを超えた場合にwindow=liqSingleとしても扱うが、
-    現行は5mと同じ判定に統合（単発は5mの厳しい方）。
     価格と異なり清算は常に down方向のみ。クールダウンは liquidation同士で判定。
     """
     candidates: list[Alert] = []
@@ -118,9 +115,7 @@ def detect_liquidation(
             if past_oi > 0 and current_oi < past_oi:
                 drop_usd = past_oi - current_oi
                 drop_pct = drop_usd / past_oi
-                if drop_usd >= thresh_5m_usd or drop_pct >= drop_pct_5m:
-                    # single閾値も参考に: 5mドロップがsingle超えでなければ抑制（誤検知防止）
-                    # ただし thresh_single_usd が 5mより小さい場合はsingleで十分なのでORで既に発火
+                if drop_usd >= thresh_5m_usd and drop_pct >= drop_pct_5m:
                     candidates.append(
                         Alert(
                             window="liq5m",
@@ -136,35 +131,6 @@ def detect_liquidation(
                             oi_drop_pct=drop_pct,
                         )
                     )
-                elif drop_usd >= thresh_single_usd and drop_usd >= thresh_single_usd:
-                    # フォールバック: single閾値のみで発火したい場合（5m閾値が高すぎる銘柄）
-                    # ただし上記で既に OR なのでここは実質同じ。念のため単独判定も残す
-                    pass
-
-            # 単発的ドロップが大きくても5m閾値未満でもsingleで拾う
-            if past_oi > 0 and current_oi < past_oi:
-                drop_usd = past_oi - current_oi
-                drop_pct = drop_usd / past_oi
-                # single閾値が5mより小さい場合、singleだけで発火させる
-                if thresh_single_usd < thresh_5m_usd and drop_usd >= thresh_single_usd and drop_usd < thresh_5m_usd and drop_pct < drop_pct_5m:
-                    # まだ候補が無ければsingleとして追加
-                    if not candidates:
-                        candidates.append(
-                            Alert(
-                                window="liq5m",
-                                change=-drop_pct,
-                                past_price=past_oi,
-                                current_price=current_oi,
-                                direction="down",
-                                symbol=symbol,
-                                kind="liquidation",
-                                oi_current=current_oi,
-                                oi_past=past_oi,
-                                oi_drop_usd=drop_usd,
-                                oi_drop_pct=drop_pct,
-                            )
-                        )
-
     # 15m OI drop
     if len(oi_history) >= 3:
         past = oi_history[-3]
@@ -173,7 +139,7 @@ def detect_liquidation(
             if past_oi > 0 and current_oi < past_oi:
                 drop_usd = past_oi - current_oi
                 drop_pct = drop_usd / past_oi
-                if drop_usd >= thresh_15m_usd or drop_pct >= drop_pct_15m:
+                if drop_usd >= thresh_15m_usd and drop_pct >= drop_pct_15m:
                     candidates.append(
                         Alert(
                             window="liq15m",

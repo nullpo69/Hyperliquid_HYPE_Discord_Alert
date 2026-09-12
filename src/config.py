@@ -40,7 +40,6 @@ if TRIGGER_MODE not in ("price", "liquidation", "both"):
     raise ValueError("TRIGGER_MODE must be price, liquidation, or both")
 
 LIQ_ENABLED = os.getenv("LIQ_ENABLED", "1").lower() not in ("0", "false", "no")
-LIQ_SINGLE_USD = float(os.getenv("LIQ_SINGLE_USD", "50000"))
 LIQ_5M_USD = float(os.getenv("LIQ_5M_USD", "150000"))
 LIQ_15M_USD = float(os.getenv("LIQ_15M_USD", "300000"))
 LIQ_DROP_PCT_5M = float(os.getenv("LIQ_DROP_PCT_5M", "0.04"))

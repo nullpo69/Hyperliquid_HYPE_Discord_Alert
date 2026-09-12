@@ -8,7 +8,7 @@ import httpx
 
 from src.config import (COOLDOWN_SECONDS, DISCORD_WEBHOOK_URL, LIQ_15M_USD,
     LIQ_5M_USD, LIQ_DROP_PCT_15M, LIQ_DROP_PCT_5M, LIQ_ENABLED,
-    LIQ_SINGLE_USD, MAX_ALERTS_PER_RUN, STATE_PATH, STATE_RETENTION_SECONDS,
+    MAX_ALERTS_PER_RUN, STATE_PATH, STATE_RETENTION_SECONDS,
     THRESHOLD_15M, THRESHOLD_5M, THRESHOLD_PREVDAY, TRIGGER_MODE)
 from src.detector import Alert, detect, detect_liquidation
 from src.hyperliquid import fetch_market_snapshots
@@ -73,7 +73,11 @@ async def run_once() -> bool:
         entry["history"].append({"t": now_ts, "price": market["price"]})
         if LIQ_ENABLED:
             if TRIGGER_MODE in ("liquidation", "both"):
-                alert = detect_liquidation(entry["oi_history"], market["oi_usd"], now_ts, COOLDOWN_SECONDS, entry["last_liq_alert"], symbol, LIQ_SINGLE_USD, LIQ_5M_USD, LIQ_15M_USD, LIQ_DROP_PCT_5M, LIQ_DROP_PCT_15M)
+                alert = detect_liquidation(
+                    entry["oi_history"], market["oi_usd"], now_ts, COOLDOWN_SECONDS,
+                    entry["last_liq_alert"], symbol, LIQ_5M_USD, LIQ_15M_USD,
+                    LIQ_DROP_PCT_5M, LIQ_DROP_PCT_15M,
+                )
                 if alert:
                     candidates.append((key, alert, entry, "liquidation"))
             entry["oi_history"].append({"t": now_ts, "oi": market["oi_usd"]})
