@@ -74,13 +74,13 @@ async def run_once() -> bool:
         if LIQ_ENABLED:
             if TRIGGER_MODE in ("liquidation", "both"):
                 alert = detect_liquidation(
-                    entry["oi_history"], market["oi_usd"], now_ts, COOLDOWN_SECONDS,
+                    entry["oi_history"], market["oi_usd"], market["price"], now_ts, COOLDOWN_SECONDS,
                     entry["last_liq_alert"], symbol, LIQ_5M_USD, LIQ_15M_USD,
                     LIQ_DROP_PCT_5M, LIQ_DROP_PCT_15M,
                 )
                 if alert:
                     candidates.append((key, alert, entry, "liquidation"))
-            entry["oi_history"].append({"t": now_ts, "oi": market["oi_usd"]})
+            entry["oi_history"].append({"t": now_ts, "oi": market["oi_usd"], "price": market["price"]})
     candidates.sort(key=_priority, reverse=True)
     chosen = candidates[:MAX_ALERTS_PER_RUN]
     suppressed = len(candidates) - len(chosen)

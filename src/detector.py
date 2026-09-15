@@ -17,6 +17,7 @@ class Alert:
     oi_past: float | None = None
     oi_drop_usd: float | None = None  # pastOi - currentOi (>0 が清算推定)
     oi_drop_pct: float | None = None
+    price_change_pct: float | None = None  # 清算判定期間中の価格変動率
 
 
 def detect(
@@ -88,6 +89,7 @@ def detect(
 def detect_liquidation(
     oi_history: list[dict],
     current_oi: float,
+    current_market_price: float,
     now_ts: float,
     cooldown: int,
     last_alert: dict | None,
@@ -99,7 +101,7 @@ def detect_liquidation(
 ) -> Alert | None:
     """
     OIドロップを清算推定として検知。
-    oi_history: list of {"t": float, "oi": float}  (past only, oldest first)
+    oi_history: list of {"t": float, "oi": float, "price": float}  (past only, oldest first)
     発火条件 (AND):
       - 5m OIドロップ額 >= thresh_5m_usd かつ ドロップ率 >= drop_pct_5m
       - 15m 同上 (3回前)
@@ -115,6 +117,12 @@ def detect_liquidation(
             if past_oi > 0 and current_oi < past_oi:
                 drop_usd = past_oi - current_oi
                 drop_pct = drop_usd / past_oi
+                past_market_price = past.get("price")
+                price_change_pct = (
+                    (current_market_price - past_market_price) / past_market_price
+                    if isinstance(past_market_price, (int, float)) and past_market_price > 0
+                    else None
+                )
                 if drop_usd >= thresh_5m_usd and drop_pct >= drop_pct_5m:
                     candidates.append(
                         Alert(
@@ -129,6 +137,7 @@ def detect_liquidation(
                             oi_past=past_oi,
                             oi_drop_usd=drop_usd,
                             oi_drop_pct=drop_pct,
+                            price_change_pct=price_change_pct,
                         )
                     )
     # 15m OI drop
@@ -139,6 +148,12 @@ def detect_liquidation(
             if past_oi > 0 and current_oi < past_oi:
                 drop_usd = past_oi - current_oi
                 drop_pct = drop_usd / past_oi
+                past_market_price = past.get("price")
+                price_change_pct = (
+                    (current_market_price - past_market_price) / past_market_price
+                    if isinstance(past_market_price, (int, float)) and past_market_price > 0
+                    else None
+                )
                 if drop_usd >= thresh_15m_usd and drop_pct >= drop_pct_15m:
                     candidates.append(
                         Alert(
@@ -153,6 +168,7 @@ def detect_liquidation(
                             oi_past=past_oi,
                             oi_drop_usd=drop_usd,
                             oi_drop_pct=drop_pct,
+                            price_change_pct=price_change_pct,
                         )
                     )
 

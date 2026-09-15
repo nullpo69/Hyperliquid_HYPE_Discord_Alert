@@ -45,6 +45,11 @@ def build_embed(alert: Alert) -> dict:
             f"**OIドロップ額:** `-${drop:,.0f}` {amount_emojis}\n"
             f"**OIドロップ率:** `-{drop_pct:.2f}%` {percentage_emojis}"
         )
+        if alert.price_change_pct is not None:
+            price_change = alert.price_change_pct * 100
+            sign = "+" if price_change > 0 else ""
+            period = "5分" if alert.window == "liq5m" else "15分"
+            description += f"\n**価格変動率 ({period}):** `{sign}{price_change:.2f}%`"
         footer = f"Hyperliquid {alert.symbol} Liquidation • {now_jst}"
     else:
         pct = alert.change * 100
