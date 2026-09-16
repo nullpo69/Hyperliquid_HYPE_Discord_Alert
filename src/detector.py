@@ -20,6 +20,61 @@ class Alert:
     price_change_pct: float | None = None  # 清算判定期間中の価格変動率
 
 
+@dataclass
+class CombinedAlert:
+    """A same-window price move and OI drop for one market."""
+
+    price: Alert
+    liquidation: Alert
+
+    @property
+    def symbol(self) -> str:
+        return self.price.symbol
+
+    @property
+    def window(self) -> str:
+        return self.price.window
+
+
+def is_same_direction_cooldown(alert: Alert, last_alert: dict | None, now_ts: float, cooldown: int) -> bool:
+    if last_alert is None:
+        return False
+    return now_ts - last_alert.get("time", 0) < cooldown and last_alert.get("direction") == alert.direction
+
+
+def detect_price_candidates(
+    history: list[dict],
+    current_price: float,
+    prev_day_price: float | None,
+    thresholds: dict[str, float],
+    now_ts: float,
+    symbol: str = "HYPE",
+) -> list[Alert]:
+    """Return every price threshold crossed, without applying a cooldown."""
+    candidates: list[Alert] = []
+
+    if len(history) >= 1 and now_ts - history[-1]["t"] >= 240:
+        past = history[-1]
+        if past["price"] > 0:
+            change = (current_price - past["price"]) / past["price"]
+            if abs(change) >= thresholds["5m"]:
+                candidates.append(Alert("5m", change, past["price"], current_price, "up" if change > 0 else "down", symbol))
+
+    if len(history) >= 3 and now_ts - history[-3]["t"] >= 780:
+        past = history[-3]
+        if past["price"] > 0:
+            change = (current_price - past["price"]) / past["price"]
+            if abs(change) >= thresholds["15m"]:
+                candidates.append(Alert("15m", change, past["price"], current_price, "up" if change > 0 else "down", symbol))
+
+    if prev_day_price is not None and prev_day_price > 0:
+        change = (current_price - prev_day_price) / prev_day_price
+        if abs(change) >= thresholds["prevDay"]:
+            candidates.append(Alert("prevDay", change, prev_day_price, current_price, "up" if change > 0 else "down", symbol))
+
+    return candidates
+
+
 def detect(
     history: list[dict],
     current_price: float,
@@ -34,37 +89,14 @@ def detect(
     history: list of {"t": float, "price": float} sorted ascending (oldest first).
              Caller should have already appended current? No - history is past only.
     """
-    candidates: list[Alert] = []
-
-    # 5m check: need at least 1 past entry (5 min ago)
-    if len(history) >= 1:
-        past = history[-1]
-        # Only use if timestamp is within 4-6 min window? For Actions cron 5m, allow any last entry
-        # But ensure at least 4 min has passed to avoid false 5m on first run
-        if now_ts - past["t"] >= 240:  # 4 min
-            change = (current_price - past["price"]) / past["price"]
-            if abs(change) >= thresholds["5m"]:
-                candidates.append(
-                    Alert("5m", change, past["price"], current_price, "up" if change > 0 else "down", symbol)
-                )
-
-    # 15m check: need 3 entries ago
-    if len(history) >= 3:
-        past = history[-3]
-        if now_ts - past["t"] >= 780:  # 13 min tolerance
-            change = (current_price - past["price"]) / past["price"]
-            if abs(change) >= thresholds["15m"]:
-                candidates.append(
-                    Alert("15m", change, past["price"], current_price, "up" if change > 0 else "down", symbol)
-                )
-
-    # prevDay check
-    if prev_day_price is not None and prev_day_price > 0:
-        change = (current_price - prev_day_price) / prev_day_price
-        if abs(change) >= thresholds["prevDay"]:
-            candidates.append(
-                Alert("prevDay", change, prev_day_price, current_price, "up" if change > 0 else "down", symbol)
-            )
+    candidates = detect_price_candidates(
+        history,
+        current_price,
+        prev_day_price,
+        thresholds,
+        now_ts,
+        symbol,
+    )
 
     if not candidates:
         return None
@@ -74,38 +106,30 @@ def detect(
     best = candidates[0]
 
     # Cooldown check
-    if last_alert is not None:
-        last_t = last_alert.get("time", 0)
-        last_dir = last_alert.get("direction")
-        # Same direction within cooldown -> suppress
-        if now_ts - last_t < cooldown and last_dir == best.direction:
-            return None
-        # Also suppress if any alert within cooldown? No - allow opposite direction immediately
-        # e.g. up then down should notify even within cooldown
+    if is_same_direction_cooldown(best, last_alert, now_ts, cooldown):
+        return None
 
     return best
 
 
-def detect_liquidation(
+def detect_liquidation_candidates(
     oi_history: list[dict],
     current_oi: float,
     current_market_price: float,
     now_ts: float,
-    cooldown: int,
-    last_alert: dict | None,
     symbol: str,
     thresh_5m_usd: float,
     thresh_15m_usd: float,
     drop_pct_5m: float,
     drop_pct_15m: float,
-) -> Alert | None:
+) -> list[Alert]:
     """
     OIドロップを清算推定として検知。
     oi_history: list of {"t": float, "oi": float, "price": float}  (past only, oldest first)
     発火条件 (AND):
       - 5m OIドロップ額 >= thresh_5m_usd かつ ドロップ率 >= drop_pct_5m
       - 15m 同上 (3回前)
-    価格と異なり清算は常に down方向のみ。クールダウンは liquidation同士で判定。
+    価格と異なり清算は常に down方向のみ。クールダウンは呼び出し側で判定する。
     """
     candidates: list[Alert] = []
 
@@ -172,21 +196,31 @@ def detect_liquidation(
                         )
                     )
 
+    return candidates
+
+
+def detect_liquidation(
+    oi_history: list[dict],
+    current_oi: float,
+    current_market_price: float,
+    now_ts: float,
+    cooldown: int,
+    last_alert: dict | None,
+    symbol: str,
+    thresh_5m_usd: float,
+    thresh_15m_usd: float,
+    drop_pct_5m: float,
+    drop_pct_15m: float,
+) -> Alert | None:
+    candidates = detect_liquidation_candidates(
+        oi_history, current_oi, current_market_price, now_ts, symbol,
+        thresh_5m_usd, thresh_15m_usd, drop_pct_5m, drop_pct_15m,
+    )
     if not candidates:
         return None
-
-    # 最大ドロップ額で選択
-    candidates.sort(key=lambda a: (a.oi_drop_usd or 0), reverse=True)
+    candidates.sort(key=lambda alert: (alert.oi_drop_usd or 0), reverse=True)
     best = candidates[0]
-
-    # クールダウン: liquidationは downのみなので same direction = 常に抑制対象
-    # ただし priceとkindが異なる場合は別枠にしたいので last_alert.kind も見る
-    if last_alert is not None:
-        last_t = last_alert.get("time", 0)
-        last_kind = last_alert.get("kind", "price")
-        last_dir = last_alert.get("direction")
-        # 同じkindの同じ方向のみクールダウン
-        if last_kind == "liquidation" and last_dir == best.direction and now_ts - last_t < cooldown:
+    if last_alert is not None and last_alert.get("kind", "price") == "liquidation":
+        if is_same_direction_cooldown(best, last_alert, now_ts, cooldown):
             return None
-
     return best

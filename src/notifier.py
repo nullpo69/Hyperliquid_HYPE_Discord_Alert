@@ -4,7 +4,7 @@ import datetime
 import httpx
 
 from src.config import MAX_WEBHOOK_RETRIES
-from src.detector import Alert
+from src.detector import Alert, CombinedAlert
 
 JST = datetime.timezone(datetime.timedelta(hours=9))
 
@@ -28,13 +28,43 @@ def _liquidation_emojis(drop_usd: float, drop_pct: float) -> tuple[str, str]:
     return amount, percentage
 
 
-def build_embed(alert: Alert) -> dict:
+def build_embed(alert: Alert | CombinedAlert) -> dict:
+    now_jst = datetime.datetime.now(JST).strftime("%Y-%m-%d %H:%M:%S JST")
+    if isinstance(alert, CombinedAlert):
+        price = alert.price
+        liquidation = alert.liquidation
+        price_pct = price.change * 100
+        price_sign = "+" if price_pct > 0 else ""
+        drop = liquidation.oi_drop_usd or 0
+        drop_pct = (liquidation.oi_drop_pct or 0) * 100
+        amount_emojis, percentage_emojis = _liquidation_emojis(drop, drop_pct / 100)
+        window_label = {"5m": "5分", "15m": "15分"}[price.window]
+        title = (
+            f"{percentage_emojis} {price.symbol} 価格急{'騰' if price.direction == 'up' else '落'} "
+            f"{price_sign}{price_pct:.2f}%・OI急減 -{drop_pct:.2f}% ({window_label})"
+        )
+        description = (
+            f"**現在価格:** `${price.current_price:,.4g}`\n"
+            f"**{window_label}前価格:** `${price.past_price:,.4g}`\n"
+            f"**価格変動率:** `{price_sign}{price_pct:.2f}%`\n\n"
+            f"**OI現在:** `${liquidation.current_price:,.0f}`\n"
+            f"**OIドロップ額:** `-${drop:,.0f}` {amount_emojis}\n"
+            f"**OIドロップ率:** `-{drop_pct:.2f}%` {percentage_emojis}"
+        )
+        footer = f"Hyperliquid {price.symbol} Price + OI • {now_jst}"
+        return {
+            "title": title,
+            "description": description,
+            "color": 0xFF4500,
+            "footer": {"text": footer},
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        }
+
     is_up = alert.direction == "up"
     is_liq = alert.kind == "liquidation"
     emoji = "💥" if is_liq else ("🚀" if is_up else "📉")
     color = 0xFF4500 if (is_liq or not is_up) else 0x00FF7F
     window_label = {"5m": "5分", "15m": "15分", "prevDay": "前日比", "liq5m": "清算5分", "liq15m": "清算15分"}.get(alert.window, alert.window)
-    now_jst = datetime.datetime.now(JST).strftime("%Y-%m-%d %H:%M:%S JST")
     if is_liq:
         drop = alert.oi_drop_usd or 0
         drop_pct = (alert.oi_drop_pct or 0) * 100
@@ -60,7 +90,7 @@ def build_embed(alert: Alert) -> dict:
     return {"title": title, "description": description, "color": color, "footer": {"text": footer}, "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()}
 
 
-async def send_webhook_batches(webhook_url: str, alerts: list[Alert], suppressed_count: int = 0) -> None:
+async def send_webhook_batches(webhook_url: str, alerts: list[Alert | CombinedAlert], suppressed_count: int = 0) -> None:
     """Post alert embeds in groups of ten and honor Discord's dynamic 429 response."""
     if not webhook_url.startswith("https://"):
         raise ValueError("DISCORD_WEBHOOK_URL is not set or invalid")
