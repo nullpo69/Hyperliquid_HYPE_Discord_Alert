@@ -6,7 +6,8 @@ from pathlib import Path
 
 import httpx
 
-from src.config import (COOLDOWN_SECONDS, DISCORD_WEBHOOK_URL, LIQ_15M_USD,
+from src.coingecko import add_market_caps
+from src.config import (COOLDOWN_SECONDS, DISCORD_WEBHOOK_URL, HIP3_MARKET_CAP_CACHE_SECONDS, LIQ_15M_USD,
     LIQ_5M_USD, LIQ_DROP_PCT_15M, LIQ_DROP_PCT_5M, LIQ_ENABLED,
     MAX_ALERTS_PER_RUN, STATE_PATH, STATE_RETENTION_SECONDS,
     THRESHOLD_15M, THRESHOLD_5M, THRESHOLD_PREVDAY, TRIGGER_MODE)
@@ -20,6 +21,7 @@ from src.detector import (
     is_same_direction_cooldown,
 )
 from src.hyperliquid import fetch_market_snapshots
+from src.hip3_market_caps import add_hip3_market_caps
 from src.notifier import send_webhook_batches
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -41,7 +43,10 @@ def load_state(path: Path, now_ts: float) -> dict:
         log.info("Resetting legacy state for dynamic DEX-qualified markets")
     cutoff = now_ts - STATE_RETENTION_SECONDS
     entries = {key: value for key, value in entries.items() if value.get("seen_at", 0) >= cutoff}
-    return {"version": 2, "symbols": entries}
+    market_caps = data.get("market_caps", {}) if data.get("version") == 2 else {}
+    if not isinstance(market_caps, dict):
+        market_caps = {}
+    return {"version": 2, "symbols": entries, "market_caps": market_caps}
 
 
 def save_state(path: Path, state: dict) -> None:
@@ -54,20 +59,23 @@ def save_state(path: Path, state: dict) -> None:
     temporary.replace(path)
 
 
-def _priority(item: tuple[str, Alert | CombinedAlert, dict, str, float]) -> tuple[float, float, float, float]:
-    """Prefer the most-traded markets, then the strongest event within that market."""
-    _, alert, _, kind, day_volume_usd = item
+def _priority(item: tuple[str, Alert | CombinedAlert, dict, str, float, float | None]) -> tuple[float, float, float, float]:
+    """Prefer the largest underlying asset, then the strongest event."""
+    _, alert, _, kind, day_volume_usd, market_cap_usd = item
+    # Some HIP-3/non-crypto markets have no CoinGecko market cap.  Keep those
+    # eligible by using their 24h volume as a deterministic fallback.
+    market_size_usd = market_cap_usd if market_cap_usd is not None else day_volume_usd
     if kind == "combined":
         assert isinstance(alert, CombinedAlert)
         return (
-            day_volume_usd,
+            market_size_usd,
             alert.liquidation.oi_drop_usd or 0,
             alert.liquidation.oi_drop_pct or 0,
             abs(alert.price.change),
         )
     assert isinstance(alert, Alert)
     return (
-        day_volume_usd,
+        market_size_usd,
         alert.oi_drop_usd or 0 if kind == "liquidation" else 0,
         alert.oi_drop_pct or 0 if kind == "liquidation" else 0,
         abs(alert.change),
@@ -110,12 +118,14 @@ async def run_once() -> bool:
     state = load_state(STATE_PATH, now_ts)
     async with httpx.AsyncClient() as client:
         markets = await fetch_market_snapshots(client)
+        await add_market_caps(client, markets)
+        await add_hip3_market_caps(client, markets, state["market_caps"], now_ts)
     log.info("Fetched %d eligible markets", len(markets))
     if not markets:
         log.warning("No market data returned; preserving state and skipping notifications")
         return False
     thresholds = {"5m": THRESHOLD_5M, "15m": THRESHOLD_15M, "prevDay": THRESHOLD_PREVDAY}
-    candidates: list[tuple[str, Alert | CombinedAlert, dict, str, float]] = []
+    candidates: list[tuple[str, Alert | CombinedAlert, dict, str, float, float | None]] = []
     for key, market in markets.items():
         entry = state["symbols"].setdefault(key, _empty_state())
         entry["seen_at"] = now_ts
@@ -123,7 +133,7 @@ async def run_once() -> bool:
         if TRIGGER_MODE == "price":
             alert = detect(entry["history"], market["price"], market["prev_day_price"], thresholds, entry["last_alert"], now_ts, COOLDOWN_SECONDS, symbol)
             if alert:
-                candidates.append((key, alert, entry, "price", market["day_volume_usd"]))
+                candidates.append((key, alert, entry, "price", market["day_volume_usd"], market["market_cap_usd"]))
 
         if TRIGGER_MODE == "both" and LIQ_ENABLED:
             price_alerts = detect_price_candidates(
@@ -137,7 +147,7 @@ async def run_once() -> bool:
                 price_alerts, liquidation_alerts, entry["last_alert"], entry["last_liq_alert"], now_ts,
             )
             if alert:
-                candidates.append((key, alert, entry, "combined", market["day_volume_usd"]))
+                candidates.append((key, alert, entry, "combined", market["day_volume_usd"], market["market_cap_usd"]))
 
         entry["history"].append({"t": now_ts, "price": market["price"]})
         if LIQ_ENABLED:
@@ -148,14 +158,14 @@ async def run_once() -> bool:
                     LIQ_DROP_PCT_5M, LIQ_DROP_PCT_15M,
                 )
                 if alert:
-                    candidates.append((key, alert, entry, "liquidation", market["day_volume_usd"]))
+                    candidates.append((key, alert, entry, "liquidation", market["day_volume_usd"], market["market_cap_usd"]))
             entry["oi_history"].append({"t": now_ts, "oi": market["oi_usd"], "price": market["price"]})
     candidates.sort(key=_priority, reverse=True)
     chosen = candidates[:MAX_ALERTS_PER_RUN]
     suppressed = len(candidates) - len(chosen)
     if chosen and DISCORD_WEBHOOK_URL:
-        await send_webhook_batches(DISCORD_WEBHOOK_URL, [alert for _, alert, _, _, _ in chosen], suppressed)
-        for _, alert, entry, kind, _ in chosen:
+        await send_webhook_batches(DISCORD_WEBHOOK_URL, [alert for _, alert, _, _, _, _ in chosen], suppressed)
+        for _, alert, entry, kind, _, _ in chosen:
             if kind == "combined":
                 assert isinstance(alert, CombinedAlert)
                 entry["last_alert"] = {
@@ -175,6 +185,10 @@ async def run_once() -> bool:
         log.warning("DISCORD_WEBHOOK_URL not set; %d alerts not sent", len(chosen))
     else:
         log.info("No alerts")
+    state["market_caps"] = {
+        key: value for key, value in state["market_caps"].items()
+        if isinstance(value, dict) and value.get("fetched_at", 0) >= now_ts - HIP3_MARKET_CAP_CACHE_SECONDS * 2
+    }
     save_state(STATE_PATH, state)
     return bool(chosen and DISCORD_WEBHOOK_URL)
 

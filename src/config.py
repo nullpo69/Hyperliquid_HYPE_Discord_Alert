@@ -21,6 +21,12 @@ if _webhook_file.exists() and not os.getenv("DISCORD_WEBHOOK_URL"):
 
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL", "")
 HL_API_URL = os.getenv("HL_API_URL", "https://api.hyperliquid.xyz/info")
+COINGECKO_MARKETS_URL = os.getenv("COINGECKO_MARKETS_URL", "https://api.coingecko.com/api/v3/coins/markets")
+COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "")
+NASDAQ_QUOTE_SUMMARY_URL = os.getenv(
+    "NASDAQ_QUOTE_SUMMARY_URL", "https://api.nasdaq.com/api/quote/{symbol}/summary?assetclass=stocks",
+)
+HIP3_MARKET_CAP_CACHE_SECONDS = int(os.getenv("HIP3_MARKET_CAP_CACHE_SECONDS", str(24 * 3600)))
 STATE_PATH = Path(os.getenv("STATE_PATH", str(Path(__file__).parent.parent / ".state" / "hype_state.json")))
 
 # Empty string denotes Hyperliquid's main perpetual DEX. `xyz` is trade.xyz.

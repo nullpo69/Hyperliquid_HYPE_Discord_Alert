@@ -60,7 +60,7 @@ Discordの負荷を抑えるため、以下を実装しています。
 * 1 Webhookリクエストに最大10件のEmbedをまとめて送信します。
 * 1回の監視実行で送信するアラートは `MAX_ALERTS_PER_RUN`（既定20件）までです。
 * 上限超過分は送信せず、最初の通知に省略件数を表示します。
-* 優先順位は24時間USD取引高（`dayNtlVlm`）の大きい銘柄が最優先です。同取引高ではOIドロップ額、OIドロップ率、価格変動率の大きいものを優先します。
+* 優先順位はUSD時価総額が大きい銘柄を最優先にします。通常perpはCoinGecko、trade.xyz（HIP-3）の個別株はNasdaq公開データを使います。指数・ETF・商品・FXなど時価総額を持たないHIP-3市場、および未掲載銘柄は24時間USD取引高（`dayNtlVlm`）で補完します。同順位ではOIドロップ額、OIドロップ率、価格変動率の大きいものを優先します。
 * HTTP 429時はDiscordが返す `retry_after` を待って再試行します。最大回数は `MAX_WEBHOOK_RETRIES`（既定5回）です。
 * `allowed_mentions` を空にし、ticker等による意図しないメンションを防ぎます。
 
@@ -71,7 +71,7 @@ Discordの負荷を抑えるため、以下を実装しています。
 1. `allMids` — 現在価格
 2. `metaAndAssetCtxs` — 上場市場、前日価格、OI、出来高
 
-mainとtrade.xyzを監視する既定構成では、合計4リクエストです。銘柄数が増えてもリクエスト数は増えません。価格、前日比、OI判定は同じ取得結果を共用します。
+mainとtrade.xyzを監視する既定構成では、Hyperliquidへ合計4リクエスト、CoinGeckoへ時価総額取得の1リクエストを行います。trade.xyzの個別株の時価総額はNasdaqから日次キャッシュで取得します。価格、前日比、OI判定は同じ取得結果を共用します。
 
 ## セットアップ
 
@@ -108,6 +108,10 @@ python -m src.main --loop
 | `SYMBOLS` | 空 | 任意のticker allow-list。空なら流動性条件を満たすすべて。 |
 | `MIN_OPEN_INTEREST_USD` | `1000000` | 監視対象にする最低USD OI。 |
 | `MIN_DAY_VOLUME_USD` | `1000000` | 監視対象にする最低24時間想定出来高。 |
+| `COINGECKO_MARKETS_URL` | `https://api.coingecko.com/api/v3/coins/markets` | 通知優先順位に使う時価総額の取得先。 |
+| `COINGECKO_API_KEY` | 空 | 任意のCoinGecko APIキー。Demo APIでは`x-cg-demo-api-key`、Pro API URLでは`x-cg-pro-api-key`として送信。 |
+| `NASDAQ_QUOTE_SUMMARY_URL` | Nasdaq公開API | trade.xyz個別株の時価総額取得先。`{symbol}`を含める。 |
+| `HIP3_MARKET_CAP_CACHE_SECONDS` | `86400` | HIP-3個別株の時価総額を再取得する間隔。 |
 | `THRESHOLD_5M` | `0.05` | 5分価格変動率。 |
 | `THRESHOLD_15M` | `0.08` | 15分価格変動率。 |
 | `THRESHOLD_PREVDAY` | `0.10` | 前日比変動率。 |
@@ -123,11 +127,11 @@ python -m src.main --loop
 
 ## State管理
 
-stateは `.state/hype_state.json` に保存します。市場ごとに直近4回の価格・OI履歴、および最終通知時刻を保持します。状態キーにはDEX名を含めるため同名tickerでも衝突しません。旧版の固定銘柄stateは、初回実行時にversion 2形式へリセットされます。
+stateは `.state/hype_state.json` に保存します。市場ごとに直近4回の価格・OI履歴、および最終通知時刻を保持します。HIP-3個別株の時価総額も日次でキャッシュします。状態キーにはDEX名を含めるため同名tickerでも衝突しません。旧版の固定銘柄stateは、初回実行時にversion 2形式へリセットされます。
 
 ## 注意事項
 
 * Webhook URLや`.env`はコミットしないでください。
 * 5分ポーリングは急変の検知に最大約5分の遅延が発生します。秒単位の通知が必要な場合はWebSocketを用いる常駐方式が必要です。
-* `both`では価格のみの急変・OIのみの大幅減少は通知されません。また通知上限時は、取引高が低い銘柄の重大イベントも後回しになります。通知量を抑えるための意図したトレードオフです。
+* `both`では価格のみの急変・OIのみの大幅減少は通知されません。また通知上限時は、時価総額が小さい銘柄の重大イベントも後回しになります。通知量を抑えるための意図したトレードオフです。
 * フィルターを0にする場合、低流動性銘柄のノイズや通知上限超過が増えます。`MAX_ALERTS_PER_RUN`を保守的に設定してください。

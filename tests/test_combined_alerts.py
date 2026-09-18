@@ -75,19 +75,27 @@ class CombinedAlertTests(unittest.TestCase):
 
         self.assertIsNone(combined)
 
-    def test_volume_is_first_priority(self):
-        low_volume = CombinedAlert(
+    def test_market_cap_is_first_priority(self):
+        lower_cap = CombinedAlert(
             Alert("5m", 0.50, 100, 150, "up", "LOW"),
             Alert("liq5m", -0.50, 1_000_000, 500_000, "down", "LOW", "liquidation", oi_drop_usd=500_000, oi_drop_pct=.50),
         )
-        high_volume = CombinedAlert(
+        higher_cap = CombinedAlert(
             Alert("5m", 0.10, 100, 110, "up", "HIGH"),
             Alert("liq5m", -0.10, 1_000_000, 900_000, "down", "HIGH", "liquidation", oi_drop_usd=100_000, oi_drop_pct=.10),
         )
 
         self.assertGreater(
-            _priority(("high", high_volume, {}, "combined", 2_000_000)),
-            _priority(("low", low_volume, {}, "combined", 1_000_000)),
+            _priority(("high", higher_cap, {}, "combined", 1_000_000, 2_000_000_000)),
+            _priority(("low", lower_cap, {}, "combined", 100_000_000, 1_000_000_000)),
+        )
+
+    def test_volume_is_used_when_market_cap_is_unavailable(self):
+        alert = Alert("5m", 0.10, 100, 110, "up", "ABC")
+
+        self.assertGreater(
+            _priority(("high", alert, {}, "price", 2_000_000, None)),
+            _priority(("low", alert, {}, "price", 1_000_000, None)),
         )
 
     def test_combined_embed_includes_price_and_oi_metrics(self):
